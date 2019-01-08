@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>后台管理</title>
+    <meta name="description" content="{'mail@mcwlsd.com'|md5}">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="icon" type="image/png" href="{$Request.root.true}/html/admin/i/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="{$Request.root.true}/html/admin/i/app-icon72x72@2x.png">
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+    <script src="{$Request.root.true}/html/admin/js/echarts.min.js"></script>
+    <link rel="stylesheet" href="{$Request.root.true}/html/admin/css/amazeui.min.css" />
+    <link rel="stylesheet" href="{$Request.root.true}/html/admin/css/amazeui.datatables.min.css" />
+    <link rel="stylesheet" href="{$Request.root.true}/html/admin/css/app.css">
+    <script src="{$Request.root.true}/html/admin/js/jquery.min.js"></script>
+    <style>
+        .am-dimmer{
+            z-index: -5;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            var bj;
+            $('#sz').click(function () {
+                bj=1;
+            })
+            $('#tjbtn').click(function () {
+                if (bj==1){
+                    $.ajax({
+                        type : 'post',
+                        url : '{:url("admin/index/addlog")}',
+                        data: $('#tjjl').serialize(),
+                        dataType:'json',
+                        success:function (data) {
+                            if (data.status == 200){
+                                // window.location.href='{:url("admin/index/index")}';
+                                alert('添加成功 可继续添加');
+                                $('#d_call_sign').val('');
+                                $('#d_device').val('');
+                                $('#d_power').val('');
+                                $('#d_signal').val('');
+                                $('#j_rate').val('');
+                                $('#j_signal').val('');
+                                $('#remark').val('');
+
+
+                            }else{
+                                alert(data.msg);
+                            }
+                        }
+                    })
+                }else{
+                    $.ajax({
+                        type : 'post',
+                        url : '{:url("admin/index/uplog")}',
+                        data: $('#tjjl').serialize(),
+                        dataType:'json',
+                        success:function (data) {
+                            if (data.status == 200){
+                                // window.location.href='{:url("admin/index/index")}';
+                                alert('更改成功');
+                                window.location.href='{:url("index")}'
+                            }else{
+                                alert(data.msg);
+                            }
+                        }
+                    })
+                }
+
+            })
+            $('.gg').click(function () {
+                bj=2;
+                $('#tjbtn').attr('data-id',1);
+                $.ajax({
+                    type : 'post',
+                    url : '{:url("admin/index/getlog")}',
+                    data: {'unique':$(this).attr('data-id')},
+                    dataType:'json',
+                    success:function (data) {
+                        if (data.status == 200){
+                            // window.location.href='{:url("admin/index/index")}';
+                            $('#d_call_sign').attr('value',data.data.d_call_sign);
+                            $('#d_device').attr('value',data.data.d_device);
+                            $('#d_power').attr('value',data.data.d_power);
+                            $('#d_signal').attr('value',data.data.d_signal);
+                            $('#j_rate').attr('value',data.data.j_rate);
+                            $('#j_signal').attr('value',data.data.j_signal);
+                            $('#date').attr('value',data.data.date);
+                            $('#remark').attr('value',data.data.remark);
+                            $('#j_device').attr('value',data.data.j_device);
+                            $('#j_power').attr('value',data.data.j_power);
+                            $('#unique_id').attr('value',data.data.unique_id);
+                        }else{
+                            alert(data.msg);
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+</head>
+
+<body data-type="index">
+
+<script src="{$Request.root.true}/html/admin/js/theme.js"></script>
+<div class="am-g tpl-g">
+    <!-- 头部 -->
+    <header>
+        <!-- logo -->
+        <div class="am-fl tpl-header-logo">
+            中国业余无线电
+        </div>
+        <!-- 右侧内容 -->
+        <div class="tpl-header-fluid">
+
+            <!-- 其它功能-->
+            <div class="am-fr tpl-header-navbar">
+                <ul>
+                    <!-- 欢迎语 -->
+                    <li class="am-text-sm tpl-header-navbar-welcome">
+                        <a href="javascript:;">欢迎你, <span>{$Think.session.user_name}</span> </a>
+                    </li>
+
+                    <!-- 退出 -->
+                    <li class="am-text-sm">
+                        <a href="{:url('index/index/index')}">
+                            <span class="am-icon-home"></span> 首页
+                        </a>
+                    </li>
+                    <!-- 退出 -->
+                    <li class="am-text-sm">
+                        <a href="{:url('admin/login/out')}">
+                            <span class="am-icon-sign-out"></span> 退出
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </header>
+    <!-- 风格切换 -->
+    <div class="tpl-skiner">
+        <div class="tpl-skiner-toggle am-icon-cog">
+        </div>
+        <div class="tpl-skiner-content">
+            <div class="tpl-skiner-content-title">
+                选择主题
+            </div>
+            <div class="tpl-skiner-content-bar">
+                <span class="skiner-color skiner-white" data-color="theme-white"></span>
+                <span class="skiner-color skiner-black" data-color="theme-black"></span>
+            </div>
+        </div>
+    </div>
+    <!-- 侧边导航栏 -->
+    <div class="left-sidebar">
+        <!-- 用户信息 -->
+        <div class="tpl-sidebar-user-panel">
+            <div class="tpl-user-panel-slide-toggleable">
+                <div class="tpl-user-panel-profile-picture">
+                    <img src="https://www.gravatar.com/avatar/{$Think.session.user_email|md5}" alt="">
+                </div>
+                <span class="user-panel-logged-in-text">
+              <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
+              {$Think.session.user_email}
+          </span>
+                <a href="javascript:;" class="tpl-user-panel-action-link"> <span class="am-icon-pencil"></span> 账号设置</a>
+            </div>
+        </div>
+
+        <!-- 菜单 -->
+        <ul class="sidebar-nav">
+            <li class="sidebar-nav-link">
+                <a href="index.html" class="active">
+                    <i class="am-icon-home sidebar-nav-link-logo"></i> 首页
+                </a>
+            </li>
+
+
+        </ul>
+    </div>
+
+
+    <!-- 内容区域 -->
+    <div class="tpl-content-wrapper">
+
+        <div class="container-fluid am-cf">
+            <div class="row">
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                    <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 后台管理</div>
+                    <p class="page-header-description">这只是个管理后台</p>
+                </div>
+                <div class="am-u-lg-3 tpl-index-settings-button">
+                    <button type="button" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0, width: 600, height: 600}" class="page-header-button" id="sz"><span class="am-icon-paint-brush"></span> 添加</button>
+                    <div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-1">
+                        <div class="am-modal-dialog">
+                            <div class="am-modal-hd">添加通联日志
+                                <a href="javascript: void(0)" onclick="window.location.reload()" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+                            </div>
+                            <div class="am-modal-bd">
+                                <form class="am-form" id="tjjl">
+                                    {:token('__hash__')}
+                                    <fieldset class="am-form-set">
+                                        <input type="hidden" name="unique_id" value="" name="unique_id" id="unique_id">
+                                        <input type="text" placeholder="对方呼号" name="d_call_sign" id="d_call_sign">
+                                        <input type="text" placeholder="对方设备" name="d_device" id="d_device">
+                                        <input type="text" placeholder="对方功率" name="d_power" id="d_power">
+                                        <input type="text" placeholder="对方信号" name="d_signal" id="d_signal">
+                                        <input type="text" placeholder="频率" name="j_rate" id="j_rate">
+                                        <input type="text" placeholder="己方设备" name="j_device" id="j_device">
+                                        <input type="text" placeholder="己方功率" name="j_power" id="j_power">
+                                        <input type="text" placeholder="己方信号" name="j_signal" id="j_signal">
+                                        <input type="text" placeholder="中继台" name="relay" id="relay">
+                                        <input type="text" class="am-form-field" name="date" id="date" placeholder="通联日期" data-am-datepicker readonly required />
+                                        <textarea placeholder="备注" name="remark" id="remark"></textarea>
+                                    </fieldset>
+                                    <button type="button" id="tjbtn" class="am-btn am-btn-primary am-btn-block">添加或更改</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="row am-cf">
+
+
+        </div>
+
+
+        <div class="row am-cf">
+
+
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12 widget-margin-bottom-lg">
+                <div class="widget am-cf widget-body-lg">
+
+                    <div class="widget-body  am-fr">
+                        <div class="am-scrollable-horizontal ">
+                            <table width="100%" class="am-table am-table-compact am-text-nowrap tpl-table-black " id="example-r">
+                                <thead>
+                                <tr>
+                                    <th>呼号</th>
+                                    <th>备注</th>
+                                    <th>时间</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {volist name='data' id='list'}
+                                <tr class="gradeX">
+                                    <td>{$list['d_call_sign']}</td>
+                                    <td>{$list['remark']}</td>
+                                    <td>{$list['date']}</td>
+                                    <td>
+                                        <div class="tpl-table-black-operation">
+                                            <a class="gg" data-id="{$list['unique_id']}" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0, width: 600, height: 600}">
+                                                <i class="am-icon-pencil"></i> 编辑
+                                            </a>
+                                            <a href="{:url('admin/index/dellog')}?unique={$list['unique_id']}" class="tpl-table-black-operation-del">
+                                                <i class="am-icon-trash"></i> 删除
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/volist}
+                                <!-- more data -->
+                                </tbody>
+                            </table>
+                            {$data|raw}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<script src="{$Request.root.true}/html/admin/js/amazeui.min.js"></script>
+<script src="{$Request.root.true}/html/admin/js/amazeui.datatables.min.js"></script>
+<script src="{$Request.root.true}/html/admin/js/dataTables.responsive.min.js"></script>
+<script src="{$Request.root.true}/html/admin/js/app.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+.logo{
+    height: 100%;
+    margin-top: -5px;
+}
+/* .am-topbar{
+    margin-bottom:0;
+} */
+.am-slides img{
+    max-height: 460px;
+}
+#content{
+
+  width: 700px;
+  background: #ffffff;
+}
+.clr::after{
+  content: '';
+  display: block;
+  clear: both;
+  
+}
+.qsl{
+  width: 100%;
+  height: auto;
+}
+.service-wrap-w,.title-name-w{
+    opacity: 0;
+}
+@media only screen and (max-width: 640px){
+  .am-dropdown{
+  		width:100%
+  }
+}
+header{
+  padding:2px 0
+}
